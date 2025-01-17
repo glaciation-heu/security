@@ -1,0 +1,11 @@
+cert-manager:
+  installCRDs: true
+
+trust-manager:
+  podDisruptionBudget:
+    enabled: true
+  replicaCount: 2
+  secretTargets:
+    enabled: true
+    authorizedSecrets:
+    - ca-bundle
