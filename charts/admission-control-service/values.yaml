@@ -1,0 +1,48 @@
+gatekeeper:
+  version: "3.15.1"
+  audit:
+    resources:
+      limits:
+        cpu: "500m"
+  controllerManager:
+    resources:
+      limits:
+        cpu: "500m"
+
+mutation:
+  resources:
+    match:
+      namespaces:
+      - cert-manager
+      - gatekeeper-system
+      - minio-operator
+      - minio-tenant
+      - replicator
+      - spark-app
+      - spark-operator
+      - vault
+    requests:
+      cpu: "100m"
+      memory: "256Mi"
+    limits:
+      cpu: "1"
+      memory: "4Gi"
+
+validation:
+  resources:
+    match:
+      namespaces:
+      - cert-manager
+      - gatekeeper-system
+      - minio-operator
+      - minio-tenant
+      - replicator
+      - spark-app
+      - spark-operator
+      - vault
+    requests:
+      cpu: "1"
+      memory: "4Gi"
+    limits:
+      cpu: "2"
+      memory: "8Gi"
