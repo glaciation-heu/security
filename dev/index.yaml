@@ -2,13 +2,13 @@ apiVersion: v1
 entries:
   admission-control:
   - apiVersion: v2
-    created: "2025-01-17T15:22:53.403896263Z"
+    created: "2025-01-17T15:35:36.157711583Z"
     dependencies:
     - name: gatekeeper
       repository: https://open-policy-agent.github.io/gatekeeper/charts
       version: 3.15.1
     description: A Helm chart for deploying Gatekeeper and its policies
-    digest: 2c9ce321ef9b74ff056071e98c55794ff85a2e76650a579e2abd08955dd87072
+    digest: b6af3ebcd52be11ce98cd482e14f8fae43e9b1e059da42acbbf829de7f65e22e
     name: admission-control
     urls:
     - https://glaciation-heu.github.io/admission-control-service/dev/admission-control-1.0.0.tgz
@@ -23,7 +23,7 @@ entries:
     version: 0.1.0
   certificate-management:
   - apiVersion: v2
-    created: "2025-01-17T15:22:53.409197907Z"
+    created: "2025-01-17T15:35:36.163199237Z"
     dependencies:
     - name: cert-manager
       repository: https://charts.jetstack.io
@@ -32,9 +32,9 @@ entries:
       repository: https://charts.jetstack.io
       version: v0.9.2
     description: A Helm chart for deploying a private certificate authority
-    digest: e04c2f8f088ffa01a815b43d19f0942054177385f19c0ecfd0d91c5401459092
+    digest: c3870f6454423392b83ee4431b87c3c96c81b19e1485dbee27e443473decda42
     name: certificate-management
     urls:
     - https://glaciation-heu.github.io/admission-control-service/dev/certificate-management-1.0.0.tgz
     version: 1.0.0
-generated: "2025-01-17T15:22:53.401337428Z"
+generated: "2025-01-17T15:35:36.154186099Z"
