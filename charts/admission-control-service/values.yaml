@@ -9,6 +9,8 @@ gatekeeper:
       limits:
         cpu: "500m"
 
+tests: true
+
 mutation:
   resources:
     match:
