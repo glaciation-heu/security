@@ -2,3 +2,7 @@ apiVersion: v2
 name: admission-control
 description: A Helm chart for deploying Gatekeeper and its policies
 version: 1.0.0
+dependencies:
+- name: gatekeeper
+  version: "3.15.1"
+  repository: "https://open-policy-agent.github.io/gatekeeper/charts"

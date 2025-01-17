@@ -1,5 +1,4 @@
 gatekeeper:
-  version: "3.15.1"
   audit:
     resources:
       limits:
