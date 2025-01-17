@@ -1,0 +1,4 @@
+apiVersion: v2
+name: admission-control
+description: A Helm chart for deploying Gatekeeper and its policies
+version: 0.1.0
