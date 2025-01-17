@@ -2,8 +2,6 @@ apiVersion: mutations.gatekeeper.sh/v1
 kind: Assign
 metadata:
   name: add-container-resource-cpu-requests
-  annotations:
-    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   applyTo:
   - groups: [""]
@@ -22,8 +20,6 @@ apiVersion: mutations.gatekeeper.sh/v1
 kind: Assign
 metadata:
   name: add-container-resource-memory-requests
-  annotations:
-    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   applyTo:
   - groups: [""]
@@ -42,8 +38,6 @@ apiVersion: mutations.gatekeeper.sh/v1
 kind: Assign
 metadata:
   name: add-container-resource-cpu-limits
-  annotations:
-    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   applyTo:
   - groups: [""]
@@ -62,8 +56,6 @@ apiVersion: mutations.gatekeeper.sh/v1
 kind: Assign
 metadata:
   name: add-container-resource-memory-limits
-  annotations:
-    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   applyTo:
   - groups: [""]
@@ -82,8 +74,6 @@ apiVersion: mutations.gatekeeper.sh/v1
 kind: Assign
 metadata:
   name: add-initcontainer-resource-cpu-requests
-  annotations:
-    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   applyTo:
   - groups: [""]
@@ -102,8 +92,6 @@ apiVersion: mutations.gatekeeper.sh/v1
 kind: Assign
 metadata:
   name: add-initcontainer-resource-memory-requests
-  annotations:
-    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   applyTo:
   - groups: [""]
@@ -122,8 +110,6 @@ apiVersion: mutations.gatekeeper.sh/v1
 kind: Assign
 metadata:
   name: add-initcontainer-resource-cpu-limits
-  annotations:
-    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   applyTo:
   - groups: [""]
@@ -142,8 +128,6 @@ apiVersion: mutations.gatekeeper.sh/v1
 kind: Assign
 metadata:
   name: add-initcontainer-resource-memory-limits
-  annotations:
-    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   applyTo:
   - groups: [""]

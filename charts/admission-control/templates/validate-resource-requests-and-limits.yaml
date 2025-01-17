@@ -3,7 +3,6 @@ kind: ConstraintTemplate
 metadata:
   name: k8scontainerrequests
   annotations:
-    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
     metadata.gatekeeper.sh/title: "Container Requests"
     metadata.gatekeeper.sh/version: 1.0.1
     description: >-
@@ -269,7 +268,6 @@ kind: ConstraintTemplate
 metadata:
   name: k8scontainerlimits
   annotations:
-    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
     metadata.gatekeeper.sh/title: "Container Limits"
     metadata.gatekeeper.sh/version: 1.0.1
     description: >-
