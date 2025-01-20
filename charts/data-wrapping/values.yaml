@@ -99,7 +99,7 @@ tenant:
           audit: off
         keystore:
           vault:
-            endpoint: "https://vault-internal:8200"
+            endpoint: "https://data-wrapping-vault-internal:8200"
             version: v2
             prefix: "minio-tenant" # Vault will store keys under this prefix
             kubernetes:
