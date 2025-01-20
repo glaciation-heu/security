@@ -1,4 +1,4 @@
-{{ if .Values.tests }}
+{{ if .Values.tests.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -26,11 +26,11 @@ data:
             "discernabilityPenalty",
             "globalCertaintyPenalty"
         ],
-        "input": "s3a://sanitization/dataset/adults.csv",
+        "input": "s3a://{{ .Values.tests.s3.bucket }}/dataset/adults.csv",
         "isFullyDistributed": false,
         "k": 3,
         "l": 2,
-        "output": "s3a://sanitization/anonymized/adults.csv",
+        "output": "s3a://{{ .Values.tests.s3.bucket }}/anonymized/adults.csv",
         "partitionFunction": "quantile",
         "quasiIdAttributes": [
             "age",
@@ -88,13 +88,13 @@ spec:
           chmod +x /tmp/bin/mc /tmp/bin/jq;
           export PATH=$PATH:/tmp/bin/;
           echo -e '\n[*] Setup object store for the sanitization process';
-          mc alias set minio https://minio.minio-tenant.svc.cluster.local $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY;
-          mc mb -p minio/sanitization/dataset;
-          mc mb -p minio/sanitization/anonymized;
+          mc alias set minio https://{{ .Values.tests.s3.endpoint }} $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY;
+          mc mb -p minio/{{ .Values.tests.s3.bucket }}/dataset;
+          mc mb -p minio/{{ .Values.tests.s3.bucket }}/anonymized;
           curl --output /tmp/adults.csv https://raw.githubusercontent.com/mosaicrown/mondrian/k8s/distributed/dataset/adults.csv
-          mc cp /tmp/adults.csv minio/sanitization/dataset/;
+          mc cp /tmp/adults.csv minio/{{ .Values.tests.s3.bucket }}/dataset/;
           echo -e '\n\n[*] Peak into the contents of the dataset'
-          mc head minio/sanitization/dataset/adults.csv;
+          mc head minio/{{ .Values.tests.s3.bucket }}/dataset/adults.csv;
           echo -e '\n[*] Run sanitization job'
           REQ_ID=$(
               curl \
@@ -123,10 +123,10 @@ spec:
               echo "Data sanitization job with id=$REQ_ID has status=$STATUS";
           done;
           echo -e '\n[*] Showcase a sample of the output';
-          mc ls minio/sanitization/anonymized;
-          mc ls minio/sanitization/anonymized/adults.csv;
-          PART=$(mc ls --json minio/sanitization/anonymized/adults.csv | jq -r '.key | select(startswith("part-00000-")) | select(endswith(".csv"))');
-          mc head minio/sanitization/anonymized/adults.csv/$PART;
+          mc ls minio/{{ .Values.tests.s3.bucket }}/anonymized;
+          mc ls minio/{{ .Values.tests.s3.bucket }}/anonymized/adults.csv;
+          PART=$(mc ls --json minio/{{ .Values.tests.s3.bucket }}/anonymized/adults.csv | jq -r '.key | select(startswith("part-00000-")) | select(endswith(".csv"))');
+          mc head minio/{{ .Values.tests.s3.bucket }}/anonymized/adults.csv/$PART;
           cleanup $REQ_ID
         securityContext:
           privileged: false

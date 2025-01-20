@@ -1,5 +1,11 @@
 namespace: spark-app
-tests: true
+tests:
+  enabled: true
+  s3:
+    # S3 endpoint and bucket where to store input and output datasets
+    # of the test
+    endpoint: minio.data-wrapping.svc.cluster.local
+    bucket: sanitization
 
 data-sanitization:
   namespace: spark-app
