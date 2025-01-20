@@ -1,0 +1,14 @@
+apiVersion: v2
+name: data-sanitization
+description: A Helm chart for deploying the data sanitization service
+version: 1.0.0
+dependencies:
+- name: data-sanitization
+  version: 0.2.4
+  repository: https://glaciation-heu.github.io/data-sanitization-service
+- name: spark-history-server
+  version: 1.0.4
+  repository: https://glaciation-heu.github.io/spark-history-server
+- name: spark-operator
+  version: 1.2.14
+  repository: https://kubeflow.github.io/spark-operator/
