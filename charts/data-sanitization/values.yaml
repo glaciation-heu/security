@@ -112,6 +112,10 @@ spark-history-server:
       memory: 1024Mi
 
 spark-operator:
+  serviceAccounts:
+    spark:
+      create: true
+      name: spark-operator-spark
   sparkJobNamespaces:
   - spark-app
   webhook:
