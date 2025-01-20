@@ -15,13 +15,11 @@ mutation:
     match:
       namespaces:
       - cert-manager
+      - data-wrapping
       - gatekeeper-system
       - minio-operator
-      - minio-tenant
-      - replicator
       - spark-app
       - spark-operator
-      - vault
     requests:
       cpu: "100m"
       memory: "256Mi"
@@ -34,13 +32,11 @@ validation:
     match:
       namespaces:
       - cert-manager
+      - data-wrapping
       - gatekeeper-system
       - minio-operator
-      - minio-tenant
-      - replicator
       - spark-app
       - spark-operator
-      - vault
     requests:
       cpu: "1"
       memory: "4Gi"

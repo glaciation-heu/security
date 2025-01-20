@@ -3,7 +3,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: minio-smoke-tests
-  namespace: minio-tenant
+  namespace: {{ .Release.Namespace }}
   annotations:
     argocd.argoproj.io/hook: PostSync
     argocd.argoproj.io/hook-delete-policy: HookSucceeded
@@ -21,7 +21,7 @@ spec:
 
           source /tmp/config.env;
           set -x;  # enable printing the command before execution (in the sub-shell)
-          mc alias set minio https://minio.minio-tenant.svc.cluster.local $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD;
+          mc alias set minio https://minio.{{ .Release.Namespace }}.svc.cluster.local $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD;
           mc mb -p minio/test-encrypted-bucket;
           mc encrypt set sse-kms encryption-key minio/test-encrypted-bucket;
           mc ls minio;
