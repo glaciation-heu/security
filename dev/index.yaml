@@ -13,14 +13,6 @@ entries:
     urls:
     - https://glaciation-heu.github.io/security/dev/admission-control-1.0.0.tgz
     version: 1.0.0
-  - apiVersion: v2
-    created: "2025-01-17T12:29:12.309206202Z"
-    description: A Helm chart for deploying Gatekeeper and its policies
-    digest: 574c3b65f45857b9134be1ea2c158d88551dc093ee88e7e59c92d8c8c32e0c9e
-    name: admission-control
-    urls:
-    - https://glaciation-heu.github.io/admission-control-service/dev/admission-control-0.1.0.tgz
-    version: 0.1.0
   certificate-management:
   - apiVersion: v2
     created: "2025-01-20T18:44:33.329620578Z"
