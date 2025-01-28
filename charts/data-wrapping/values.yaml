@@ -114,11 +114,11 @@ tenant:
     api:
       enabled: true
       ingressClassName: "nginx"
-      annotations:
+      # annotations:
       #   # NOTE: To make sure the certificate is trusted by clients we should use
       #   # something like Let's Encrypt
       #   cert-manager.io/cluster-issuer: "private-ca-issuer"
-        nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+      #   nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
       # tls:
       # - hosts:
       #   - glaciation-tenant.integration
@@ -129,11 +129,11 @@ tenant:
     console:
       enabled: true
       ingressClassName: "nginx"
-      annotations:
+      # annotations:
       #   # NOTE: To make sure the certificate is trusted by clients we should use
       #   # something like Let's Encrypt
       #   cert-manager.io/cluster-issuer: "private-ca-issuer"
-        nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+      #   nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
       # tls:
       # - hosts:
       #   - glaciation-tenant-console.integration
@@ -191,11 +191,11 @@ vault:
     ingress:
       enabled: true
       ingressClassName: nginx
-      annotations:
+      # annotations:
       #   # NOTE: To make sure the certificate is trusted by clients we should use
       #   # something like Let's Encrypt
       #   cert-manager.io/cluster-issuer: "private-ca-issuer"
-        nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+      #   nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
       # tls:
       # - hosts:
       #   - vault.integration
