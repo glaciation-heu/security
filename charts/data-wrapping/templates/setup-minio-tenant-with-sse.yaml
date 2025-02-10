@@ -148,8 +148,6 @@ spec:
               done
           }
 
-          echo '[*] Initialize HA Vault cluster'
-          
           # Loop infinitely
           while :
           do
@@ -160,7 +158,9 @@ spec:
               vault operator init -address=https://{{ .Release.Namespace }}-vault-0.{{ .Release.Namespace }}-vault-internal:8200 -status
               STATUS=$?
 
-              if [ "$STATUS" -gt 0 ]; then
+              if [ "$STATUS" -eq 2 ]; then
+                  echo '[*] Initialize HA Vault cluster'
+
                   # Setup HA Vault cluster leader
                   # TODO: Persist PGP encrypted Vault unseal keys somewhere outside the cluster
                   vault operator init \
@@ -193,7 +193,7 @@ spec:
                 https://{{ .Release.Namespace }}-vault-0.{{ .Release.Namespace }}-vault-internal:8200
               unseal {{ .Release.Namespace }}-vault-2
 
-              if [ "$STATUS" -gt 0 ]; then
+              if [ "$STATUS" -eq 2 ]; then
                   echo -e '\n[*] Setup HA Vault cluster for integration with MinIO'
                   VAULT_ROOT_TOKEN=$(sed -n 's/\s*"root_token": "\(.*\)".*/\1/p' /vault/unseal/response.json)
                   vault login \
