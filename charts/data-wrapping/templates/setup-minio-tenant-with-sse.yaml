@@ -89,6 +89,18 @@ metadata:
     kubernetes.io/service-account.name: minio-kes
 type: kubernetes.io/service-account-token
 ---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: vault-unseal-keys
+  namespace: {{ .Release.Namespace }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Mi
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -117,7 +129,7 @@ spec:
         - -c
         - |
           function unseal {
-              head -n $THRESHOLD /vault/cluster-keys |
+              head -n $THRESHOLD /vault/unseal/cluster-keys |
               while read line; do
                 vault operator unseal \
                   -address=https://$1.{{ .Release.Namespace }}-vault-internal:8200 \
@@ -144,10 +156,10 @@ spec:
                     -address=https://{{ .Release.Namespace }}-vault-0.{{ .Release.Namespace }}-vault-internal:8200 \
                     -key-shares=$SHARES \
                     -key-threshold=$THRESHOLD \
-                    -format=json > /vault/response.json
+                    -format=json > /vault/unseal/response.json
 
                   # Extract unseal keys from the JSON response
-                  awk '/"unseal_keys_b64": \[/{flag=1;next}/\]/{flag=0}flag' /vault/response.json | sed -n 's/\s*"\(.*\)".*/\1/p' > /vault/cluster-keys
+                  awk '/"unseal_keys_b64": \[/{flag=1;next}/\]/{flag=0}flag' /vault/unseal/response.json | sed -n 's/\s*"\(.*\)".*/\1/p' > /vault/unseal/cluster-keys
               fi
 
               unseal {{ .Release.Namespace }}-vault-0
@@ -172,7 +184,7 @@ spec:
 
               if [ "$STATUS" -gt 0 ]; then
                   echo -e '\n[*] Setup HA Vault cluster for integration with MinIO'
-                  VAULT_ROOT_TOKEN=$(sed -n 's/\s*"root_token": "\(.*\)".*/\1/p' /vault/response.json)
+                  VAULT_ROOT_TOKEN=$(sed -n 's/\s*"root_token": "\(.*\)".*/\1/p' /vault/unseal/response.json)
                   vault login \
                     -address=https://{{ .Release.Namespace }}-vault-0.{{ .Release.Namespace }}-vault-internal:8200 \
                     $VAULT_ROOT_TOKEN
@@ -225,6 +237,8 @@ spec:
           subPath: kes-policy.hcl
           name: kes-policy
           readOnly: true
+        - mountPath: /vault/unseal
+          name: vault-unseal-keys
       securityContext:
         runAsUser: 100
         runAsGroup: 1000
@@ -248,3 +262,6 @@ spec:
         configMap:
           defaultMode: 420
           name: kes-policy
+      - name: vault-unseal-keys
+        persistentVolumeClaim:
+          claimName: vault-unseal-keys
