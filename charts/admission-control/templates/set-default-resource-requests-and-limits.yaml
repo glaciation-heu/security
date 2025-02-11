@@ -1,3 +1,4 @@
+{{ if .Values.mutation.resources.enable }}
 apiVersion: mutations.gatekeeper.sh/v1
 kind: Assign
 metadata:
@@ -141,3 +142,4 @@ spec:
       condition: MustNotExist
     assign:
       value: {{ .Values.mutation.resources.limits.memory | quote }}
+{{ end }}

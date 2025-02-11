@@ -12,6 +12,7 @@ tests: true
 
 mutation:
   resources:
+    enable: true
     match:
       namespaces:
       - cert-manager
@@ -27,12 +28,14 @@ mutation:
       cpu: "1"
       memory: "4Gi"
   nodeSelector:
+    enable: true
     match:
       namespaces:
       - mef-sog-uc1-wl
 
 validation:
   resources:
+    enable: true
     match:
       namespaces:
       - cert-manager
@@ -48,6 +51,7 @@ validation:
       cpu: "2"
       memory: "8Gi"
   nodeSelector:
+    enable: true
     match:
       namespaces:
       - mef-sog-uc1-wl

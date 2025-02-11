@@ -1,3 +1,4 @@
+{{ if .Values.validation.resources.enable }}
 apiVersion: templates.gatekeeper.sh/v1
 kind: ConstraintTemplate
 metadata:
@@ -559,3 +560,4 @@ spec:
   parameters:
     cpu: {{ .Values.validation.resources.limits.cpu | quote }}
     memory: {{ .Values.validation.resources.limits.memory | quote }}
+{{ end }}
