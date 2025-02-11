@@ -1,0 +1,49 @@
+apiVersion: mutations.gatekeeper.sh/v1
+kind: Assign
+metadata:
+  name: add-hardened-security-ring-node-selector-to-uc1-workload
+spec:
+  applyTo:
+  - groups: [""]
+    kinds: ["Pod"]
+    versions: ["v1"]
+  match:
+    namespaces: {{- toYaml .Values.mutation.nodeSelector.match.namespaces | nindent 6 }}
+    labelSelector:
+      matchExpressions:
+      - key: security-ring
+        operator: In
+        values:
+        - hardened
+  location: spec.nodeSelector.security-ring
+  parameters:
+    pathTests:
+    - subPath: spec.nodeSelector.security-ring
+      condition: MustNotExist
+    assign:
+      value: hardened
+---
+apiVersion: mutations.gatekeeper.sh/v1
+kind: Assign
+metadata:
+  name: add-unhardened-security-ring-node-selector-to-uc1-workload
+spec:
+  applyTo:
+  - groups: [""]
+    kinds: ["Pod"]
+    versions: ["v1"]
+  match:
+    namespaces: {{- toYaml .Values.mutation.nodeSelector.match.namespaces | nindent 6 }}
+    labelSelector:
+      matchExpressions:
+      - key: security-ring
+        operator: In
+        values:
+        - unhardened
+  location: spec.nodeSelector.security-ring
+  parameters:
+    pathTests:
+    - subPath: spec.nodeSelector.security-ring
+      condition: MustNotExist
+    assign:
+      value: unhardened

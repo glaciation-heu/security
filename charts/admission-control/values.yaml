@@ -26,6 +26,10 @@ mutation:
     limits:
       cpu: "1"
       memory: "4Gi"
+  nodeSelector:
+    match:
+      namespaces:
+      - mef-sog-uc1-wl
 
 validation:
   resources:
@@ -43,3 +47,7 @@ validation:
     limits:
       cpu: "2"
       memory: "8Gi"
+  nodeSelector:
+    match:
+      namespaces:
+      - mef-sog-uc1-wl

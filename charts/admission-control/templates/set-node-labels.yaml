@@ -53,12 +53,24 @@ spec:
         - |
           set -e # make sure the job fails if any instruction fails
 
-          # Get nodes
-          nodes=$(kubectl get nodes -o name)
+          # Get worker nodes
+          nodes=$(kubectl get nodes -l '!node-role.kubernetes.io/control-plane' -o name)
+
+          # Set node labels (half hardened and half unhardened)
+          nof_nodes=$(echo ${nodes} | wc -w)
+          count=0
           for node in ${nodes}
           do
-            # Set node labels
-            kubectl label ${node} uc1-tenant=true uc2-tenant=true --overwrite
+            if [ ${count} -lt $((${nof_nodes} / 2)) ]
+            then
+              value=hardened
+            else
+              value=unhardened
+            fi
+
+            kubectl label ${node} security-ring=${value} --overwrite
+
+            count=$((count + 1))
           done
         resources:
           limits:
