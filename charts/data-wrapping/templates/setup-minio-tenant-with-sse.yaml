@@ -242,7 +242,7 @@ spec:
           name: vault-unseal-keys
       securityContext:
         fsGroup: 1000
-        fsGroupChangePolicy: Always
+        fsGroupChangePolicy: OnRootMismatch
         seccompProfile:
           type: RuntimeDefault
       volumes:

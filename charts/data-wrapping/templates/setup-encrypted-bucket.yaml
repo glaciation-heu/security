@@ -5,6 +5,7 @@ metadata:
   name: configure-encrypted-buckets
   namespace: {{ .Release.Namespace }}
   annotations:
+    argocd.argoproj.io/hook: Sync
     argocd.argoproj.io/hook-delete-policy: HookSucceeded
     argocd.argoproj.io/sync-wave: "1"
 spec:
@@ -88,7 +89,7 @@ spec:
       restartPolicy: Never
       securityContext:
         fsGroup: 1000
-        fsGroupChangePolicy: Always
+        fsGroupChangePolicy: OnRootMismatch
         seccompProfile:
           type: RuntimeDefault
       volumes:
