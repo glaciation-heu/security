@@ -1,0 +1,109 @@
+# TODO: Mount certificate bundle / glaciation-kes-tls to access the trusted certificates
+{{ if .Values.encrypt.buckets }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: configure-encrypted-buckets
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+spec:
+  template:
+    spec:
+      initContainers:
+      - name: minio-kes-client
+        image: quay.io/minio/kes:2024-03-13T17-52-13Z
+        command:
+        - /bin/sh
+        - -c
+        - |
+          set -e # make sure the job fails if any instruction fails
+
+          export KES_CLIENT_KEY=/tmp/client/private.key
+          export KES_CLIENT_CERT=/tmp/client/public.crt
+          # export MINIO_KES_IDENTITY=fbe34b4f6e92965f596efde0ab9d1e738aa0aed7ee65b03b719ff87ee72dd79c
+          export KES_SERVER=https://{{ .Values.tenant.secrets.name }}-kes-hl-svc.{{ .Release.Namespace }}.svc.cluster.local:7373
+          # export SSL_CERT_DIR=/tmp/kes
+
+          declare -a keys=({{- range .Values.encrypt.buckets }} {{ .key | quote }} {{ end }})
+
+          for key in ${keys[@]}
+          do
+            if ! ./kes key info $key
+            then
+              ./kes key create $key
+            fi
+          done
+        securityContext:
+          privileged: false
+          runAsUser: 1000
+          runAsGroup: 1000
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+        volumeMounts:
+        - mountPath: /etc/ssl/certs/ca.crt
+          subPath: ca.crt
+          name: ca-bundle
+          readOnly: true
+        - mountPath: /tmp/client
+          name: client-tls
+          readOnly: true
+      containers:
+      - name: minio-client
+        image: quay.io/minio/minio:RELEASE.2024-03-15T01-07-19Z
+        command:
+        - /bin/sh
+        - -c
+        - |
+          set -e # make sure the job fails if any instruction fails
+
+          source /tmp/config.env
+          mc alias set minio https://minio.{{ .Release.Namespace }}.svc.cluster.local $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD
+          mc mb -p {{- range .Values.encrypt.buckets }} minio/{{ .name }} {{ end }}
+          # TODO: Itearate over names and keys
+          declare -a names=({{- range .Values.encrypt.buckets }} {{ .name | quote }} {{ end }})
+          declare -a keys=({{- range .Values.encrypt.buckets }} {{ .key | quote }} {{ end }})
+          for i in $(seq ${names[@]})
+          do
+            mc encrypt set sse-kms ${keys[$i]} minio/${names[$i]}
+          done
+        securityContext:
+          privileged: false
+          runAsUser: 1000
+          runAsGroup: 1000
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+        volumeMounts:
+        - mountPath: /tmp/config.env
+          subPath: config.env
+          name: configuration
+          readOnly: true
+        - mountPath: /etc/ssl/certs/ca.crt
+          subPath: ca.crt
+          name: ca-bundle
+          readOnly: true
+      restartPolicy: Never
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      volumes:
+      - name: ca-bundle
+        configMap:
+          defaultMode: 444
+          name: ca-bundle
+      - name: client-tls
+        secret:
+          defaultMode: 400
+          secretName: {{ .Values.tenant.tenant.name }}-client-tls
+      - name: configuration
+        secret:
+          defaultMode: 400
+          secretName: {{ .Values.tenant.secrets.name }}
+  backoffLimit: 5
+{{ end }}

@@ -61,6 +61,6 @@ spec:
           defaultMode: 420
           sources:
           - secret:
-              name: glaciation-env-configuration          
+              name: {{ .Values.tenant.secrets.name }}
   backoffLimit: 25
 {{ end }}
