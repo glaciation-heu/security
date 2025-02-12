@@ -169,7 +169,7 @@ vault:
     volumes:
       - name: userconfig-vault-tls
         secret:
-          defaultMode: 420
+          defaultMode: 0440
           secretName: vault-tls
     volumeMounts:
       - mountPath: /vault/userconfig/vault-tls

@@ -54,13 +54,11 @@ spec:
       volumes:
       - name: ca-bundle
         configMap:
-          defaultMode: 422
+          defaultMode: 0444
           name: ca-bundle
       - name: configuration
-        projected:
-          defaultMode: 420
-          sources:
-          - secret:
-              name: {{ .Values.tenant.secrets.name }}
+        secret:
+          defaultMode: 0440
+          secretName: {{ .Values.tenant.secrets.name }}
   backoffLimit: 25
 {{ end }}

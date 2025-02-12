@@ -153,11 +153,11 @@ spec:
       volumes:
       - name: ca-bundle
         configMap:
-          defaultMode: 422
+          defaultMode: 0444
           name: ca-bundle
       - name: data-sanitization-config
         configMap:
-          defaultMode: 422
+          defaultMode: 0444
           name: data-sanitization-config
   backoffLimit: 5
 {{ end }}

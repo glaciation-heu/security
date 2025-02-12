@@ -25,7 +25,7 @@ data-sanitization:
   volumes:
   - name: ca-bundle
     configMap:
-      defaultMode: 422
+      defaultMode: 0444
       name: ca-bundle
 
   volumeMounts:
@@ -73,7 +73,7 @@ spark-history-server:
   volumes:
   - name: ca
     configMap:
-      defaultMode: 422
+      defaultMode: 0444
       name: ca-bundle
 
   volumeMounts:

@@ -116,17 +116,6 @@ spec:
       labels:
         app: auto-unseal-vault-cluster
     spec:
-      initContainers:
-      - name: volume-mount-hack
-        image: busybox
-        command: ["sh", "-c", "chown -R 100:1000 /vault/unseal"]
-        volumeMounts:
-        - name: vault-unseal-keys
-          mountPath: /vault/unseal
-        securityContext:
-          runAsUser: 0
-          privileged: false
-          allowPrivilegeEscalation: false
       containers:
       - name: vault
         image: hashicorp/vault:1.16.1
@@ -252,24 +241,26 @@ spec:
         - mountPath: /vault/unseal
           name: vault-unseal-keys
       securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: Always
         seccompProfile:
           type: RuntimeDefault
       volumes:
       - name: ca-bundle
         configMap:
-          defaultMode: 422
+          defaultMode: 0444
           name: ca-bundle
       - name: userconfig-vault-tls
         secret:
-          defaultMode: 420
+          defaultMode: 0440
           secretName: vault-tls
       - name: minio-kes-service-account-token
         secret:
-          defaultMode: 420
+          defaultMode: 0440
           secretName: minio-kes-secret
       - name: kes-policy
         configMap:
-          defaultMode: 420
+          defaultMode: 0440
           name: kes-policy
       - name: vault-unseal-keys
         persistentVolumeClaim:
