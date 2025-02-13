@@ -116,6 +116,17 @@ spec:
       labels:
         app: auto-unseal-vault-cluster
     spec:
+      initContainers:
+      - name: volume-mount-hack
+        image: busybox
+        command: ["sh", "-c", "chown -R 100:1000 /vault/unseal"]
+        volumeMounts:
+        - name: vault-unseal-keys
+          mountPath: /vault/unseal
+        securityContext:
+          runAsUser: 0
+          privileged: false
+          allowPrivilegeEscalation: false
       containers:
       - name: vault
         image: hashicorp/vault:1.16.1
