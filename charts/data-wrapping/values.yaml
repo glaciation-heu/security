@@ -53,6 +53,9 @@ tenant:
               - ALL
           seccompProfile:
             type: RuntimeDefault
+    # Enable a Prometheus-compatible scraping endpoint
+    metrics:
+      enabled: true
     # Enable automatic certificate generation and signing
     certificate:
       requestAutoCert: true
@@ -225,10 +228,20 @@ vault:
             tls_cert_file = "/vault/userconfig/vault-tls/tls.crt"
             tls_key_file  = "/vault/userconfig/vault-tls/tls.key"
             tls_client_ca_file = "/vault/userconfig/vault-tls/ca.crt"
+
+            # Enable unauthenticated metrics access
+            telemetry {
+              unauthenticated_metrics_access = "true"
+            }
           }
+
+          service_registration "kubernetes" {}
 
           storage "raft" {
             path = "/vault/data"
           }
 
-          service_registration "kubernetes" {}
+          telemetry {
+            prometheus_retention_time = "30s"
+            disable_hostname = true
+          }
