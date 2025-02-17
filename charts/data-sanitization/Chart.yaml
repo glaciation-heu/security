@@ -4,7 +4,7 @@ description: A Helm chart for deploying the data sanitization service
 version: 1.0.0
 dependencies:
 - name: data-sanitization
-  version: 0.2.5
+  version: 0.2.6
   repository: https://glaciation-heu.github.io/data-sanitization-service
 - name: spark-history-server
   version: 1.0.5
