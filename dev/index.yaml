@@ -2,36 +2,36 @@ apiVersion: v1
 entries:
   admission-control:
   - apiVersion: v2
-    created: "2025-02-17T13:08:29.893817273Z"
+    created: "2025-02-17T13:38:20.634683254Z"
     dependencies:
     - name: gatekeeper
       repository: https://open-policy-agent.github.io/gatekeeper/charts
       version: 3.15.1
     description: A Helm chart for deploying Gatekeeper and its policies
-    digest: 5b4109e0bbf9a1bd95f0321aeeb0143d804dbdb9ca50b734e7a5f10cfd718ae1
+    digest: f127504852564925a223b1e6bf9baf218178210114e872dd95f39adf04cd4e18
     name: admission-control
     urls:
     - https://glaciation-heu.github.io/security/dev/admission-control-1.0.0.tgz
     version: 1.0.0
   certificate-management:
   - apiVersion: v2
-    created: "2025-02-17T13:08:29.900429154Z"
+    created: "2025-02-17T13:38:20.641659115Z"
     dependencies:
     - name: cert-manager
       repository: https://charts.jetstack.io
       version: v1.17.1
     - name: trust-manager
       repository: https://charts.jetstack.io
-      version: v0.16.0
+      version: v0.9.2
     description: A Helm chart for deploying a private certificate authority
-    digest: 0163db117cf05cbfc822fd7b6f61f23c2e9d02fbae5ea804dfdd8800715c85ae
+    digest: 809087e045b1074e6eb474ecdb8f54f0abf9e512ce99bf2a10836fbb0053a258
     name: certificate-management
     urls:
     - https://glaciation-heu.github.io/security/dev/certificate-management-1.0.0.tgz
     version: 1.0.0
   data-sanitization:
   - apiVersion: v2
-    created: "2025-02-17T13:08:29.90271801Z"
+    created: "2025-02-17T13:38:20.644654573Z"
     dependencies:
     - name: data-sanitization
       repository: https://glaciation-heu.github.io/data-sanitization-service
@@ -43,14 +43,14 @@ entries:
       repository: https://kubeflow.github.io/spark-operator/
       version: 1.2.14
     description: A Helm chart for deploying the data sanitization service
-    digest: 060be57ada890906c0470dabbf5a2b14210972f664d99b787c7e5c5c9501105d
+    digest: 9da576b996aade8a5f46b9ced1ac6dde606282b6f51dd9a3de3412af88a7b475
     name: data-sanitization
     urls:
     - https://glaciation-heu.github.io/security/dev/data-sanitization-1.0.0.tgz
     version: 1.0.0
   data-wrapping:
   - apiVersion: v2
-    created: "2025-02-17T13:08:29.90749591Z"
+    created: "2025-02-17T13:38:20.648613872Z"
     dependencies:
     - name: tenant
       repository: https://operator.min.io
@@ -59,9 +59,9 @@ entries:
       repository: https://helm.releases.hashicorp.com
       version: 0.28.0
     description: A Helm chart for deploying a MinIO tenant with SSE
-    digest: ffb5eb11bba5c471cfd089b438397e1f9372463b8634ab5c58b4e58d34a84435
+    digest: a57e2c4f7593a743c3bb3f2fd2c2fc7ea1ea32fd9fc4e0873aba4146142dd183
     name: data-wrapping
     urls:
     - https://glaciation-heu.github.io/security/dev/data-wrapping-1.0.0.tgz
     version: 1.0.0
-generated: "2025-02-17T13:08:29.891437258Z"
+generated: "2025-02-17T13:38:20.630720859Z"
