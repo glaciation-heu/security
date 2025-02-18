@@ -1,0 +1,16 @@
+{{- if .Values.tenant.secrets.existingSecret }}
+{{- if ne .Values.secrets.name .Values.tenant.secrets.existingSecret.name }}
+{{- fail "# ERROR: '.secrets.name' and '.tenant.secrets.existingSecret.name' must be equal." }}
+{{- else }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Values.secrets.name }}
+type: Opaque
+stringData:
+  config.env: |-
+    export MINIO_ROOT_USER={{ .Values.secrets.accessKey | quote }}
+    export MINIO_ROOT_PASSWORD={{ .Values.secrets.secretKey | quote }}
+    export MINIO_PROMETHEUS_AUTH_TYPE={{ .Values.secrets.prometheusAuthType | quote }}
+{{- end }}
+{{- end }}

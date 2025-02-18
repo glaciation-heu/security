@@ -2,14 +2,18 @@ encrypt:
   buckets:
   - name: uc1-mef-sog-encrypt
     key: uc1-encryption-key
-tests: true
-
-tenant:
-  # Secret for configuring the root MinIO user
-  secrets:
+secrets:
     name: glaciation-env-configuration
     accessKey: minio
     secretKey: minio123
+    prometheusAuthType: public
+tests: true
+
+tenant:
+  # Secret for configuring the root MinIO user and the Prometheus authentication
+  secrets:
+    existingSecret:
+      name: glaciation-env-configuration
 
   tenant:
     name: glaciation
