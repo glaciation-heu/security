@@ -104,6 +104,6 @@ spec:
       - name: configuration
         secret:
           defaultMode: 0440
-          secretName: {{ .Values.tenant.secrets.name }}
+          secretName: {{ .Values.tenant.secrets.existingSecret.name | default .Values.tenant.secrets.name }}
   backoffLimit: 5
 {{ end }}
