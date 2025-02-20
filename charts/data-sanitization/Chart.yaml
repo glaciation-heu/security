@@ -10,5 +10,5 @@ dependencies:
   version: 1.0.5
   repository: https://glaciation-heu.github.io/spark-history-server
 - name: spark-operator
-  version: 1.2.14
+  version: 1.4.0
   repository: https://kubeflow.github.io/spark-operator/
