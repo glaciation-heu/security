@@ -30,7 +30,7 @@ tenant:
         # Size of each volume
         size: 1Gi
         # Storage class of the volumes
-        storageClassName: local-path
+        storageClassName: longhorn
         # Minimum and maximum resources requested for each pod
         resources:
           requests:
@@ -193,11 +193,11 @@ vault:
     dataStorage:
       enabled: true
       size: 10Gi
-      storageClass: local-path
+      storageClass: longhorn
     auditStorage:
       enabled: true
       size: 10Gi
-      storageClass: local-path
+      storageClass: longhorn
     ui:
       enabled: true
     ingress:
