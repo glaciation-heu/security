@@ -139,6 +139,15 @@ spec:
         - /bin/sh
         - -c
         - |
+          function join {
+              vault operator raft join \
+                -address=https://$1.{{ .Release.Namespace }}-vault-internal:8200 \
+                -leader-ca-cert=@/vault/userconfig/vault-tls/ca.crt \
+                -leader-client-cert=@/vault/userconfig/vault-tls/tls.crt \
+                -leader-client-key=@/vault/userconfig/vault-tls/tls.key \
+                https://{{ .Release.Namespace }}-vault-internal:8200
+          }
+
           function unseal {
               head -n $THRESHOLD /vault/unseal/cluster-keys |
               while read line; do
@@ -170,6 +179,11 @@ spec:
                   # Extract unseal keys from the JSON response
                   awk '/"unseal_keys_b64": \[/{flag=1;next}/\]/{flag=0}flag' /vault/unseal/response.json | sed -n 's/\s*"\(.*\)".*/\1/p' > /vault/unseal/cluster-keys
               fi
+
+              # Ensure all nodes join the HA Vault cluster
+              join {{ .Release.Namespace }}-vault-0
+              join {{ .Release.Namespace }}-vault-1
+              join {{ .Release.Namespace }}-vault-2
 
               # Unseal HA Vault cluster
               unseal
