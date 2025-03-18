@@ -1,7 +1,10 @@
-encrypt:
-  buckets:
+buckets:
+  default:
+  - name: uc1-mef-sog-default
+  encrypt:
   - name: uc1-mef-sog-encrypt
     key: uc1-encryption-key
+
 secrets:
     name: glaciation-env-configuration
     accessKey: minio

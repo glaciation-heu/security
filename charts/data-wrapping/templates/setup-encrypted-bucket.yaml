@@ -1,8 +1,8 @@
-{{ if .Values.encrypt.buckets }}
+{{ if .Values.buckets }}
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: configure-encrypted-buckets
+  name: configure-buckets
   namespace: {{ .Release.Namespace }}
   annotations:
     argocd.argoproj.io/hook: Sync
@@ -11,6 +11,7 @@ metadata:
 spec:
   template:
     spec:
+      {{- if .Values.buckets.encrypt }}
       initContainers:
       - name: minio-kes-client
         image: quay.io/minio/kes:2024-03-13T17-52-13Z
@@ -24,7 +25,7 @@ spec:
           export KES_CLIENT_CERT=/kes-client/public.crt
           export KES_SERVER=https://{{ .Values.tenant.tenant.name }}-kes-hl-svc.{{ .Release.Namespace }}.svc.cluster.local:7373
 
-          declare -a keys=({{- range .Values.encrypt.buckets }} {{ .key | quote }} {{ end }})
+          declare -a keys=({{ range .Values.buckets.encrypt }} {{ .key | quote }} {{ end }})
           for key in ${keys[@]}
           do
             if ! ./kes key info $key 2> /dev/null
@@ -50,6 +51,7 @@ spec:
         - mountPath: /kes-client
           name: client-tls
           readOnly: true
+      {{- end }}
       containers:
       - name: minio-client
         image: quay.io/minio/minio:RELEASE.2024-03-15T01-07-19Z
@@ -61,13 +63,22 @@ spec:
 
           source /tmp/config.env
           mc alias set minio https://minio.{{ .Release.Namespace }}.svc.cluster.local $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD
-          mc mb -p {{- range .Values.encrypt.buckets }} minio/{{ .name }} {{ end }}
-          declare -a names=({{- range .Values.encrypt.buckets }} {{ .name | quote }} {{ end }})
-          declare -a keys=({{- range .Values.encrypt.buckets }} {{ .key | quote }} {{ end }})
+
+          {{- if .Values.buckets.default }}
+          # Configure default buckets
+          mc mb -p {{ range .Values.buckets.default }} minio/{{ .name }} {{ end }}
+          {{- end }}
+
+          {{- if .Values.buckets.encrypt }}
+          # Configure encrypted buckets
+          mc mb -p {{ range .Values.buckets.encrypt }} minio/{{ .name }} {{ end }}
+          declare -a names=({{ range .Values.buckets.encrypt }} {{ .name | quote }} {{ end }})
+          declare -a keys=({{ range .Values.buckets.encrypt }} {{ .key | quote }} {{ end }})
           for i in ${!names[@]}
           do
             mc encrypt set sse-kms ${keys[i]} minio/${names[i]}
           done
+          {{- end }}
         securityContext:
           privileged: false
           runAsUser: 1000
