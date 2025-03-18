@@ -174,23 +174,7 @@ spec:
               fi
 
               unseal {{ .Release.Namespace }}-vault-0
-
-              # Setup HA Vault cluster follower ({{ .Release.Namespace }}-vault-1)
-              vault operator raft join \
-                -address=https://{{ .Release.Namespace }}-vault-1.{{ .Release.Namespace }}-vault-internal:8200 \
-                -leader-ca-cert="$(cat /vault/userconfig/vault-tls/ca.crt)" \
-                -leader-client-cert="$(cat /vault/userconfig/vault-tls/tls.crt)" \
-                -leader-client-key="$(cat /vault/userconfig/vault-tls/tls.key)" \
-                https://{{ .Release.Namespace }}-vault-0.{{ .Release.Namespace }}-vault-internal:8200
               unseal {{ .Release.Namespace }}-vault-1
-
-              # Setup HA Vault cluster follower ({{ .Release.Namespace }}-vault-2)
-              vault operator raft join \
-                -address=https://{{ .Release.Namespace }}-vault-2.{{ .Release.Namespace }}-vault-internal:8200 \
-                -leader-ca-cert="$(cat /vault/userconfig/vault-tls/ca.crt)" \
-                -leader-client-cert="$(cat /vault/userconfig/vault-tls/tls.crt)" \
-                -leader-client-key="$(cat /vault/userconfig/vault-tls/tls.key)" \
-                https://{{ .Release.Namespace }}-vault-0.{{ .Release.Namespace }}-vault-internal:8200
               unseal {{ .Release.Namespace }}-vault-2
 
               if [ "$STATUS" -eq 2 ]; then
