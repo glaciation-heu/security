@@ -152,7 +152,7 @@ spec:
               head -n $THRESHOLD /vault/unseal/cluster-keys |
               while read line; do
                 vault operator unseal \
-                  -address=https://{{ .Release.Namespace }}-vault-internal:8200 \
+                  -address=https://$1.{{ .Release.Namespace }}-vault-internal:8200 \
                   $line;
               done
           }
@@ -186,7 +186,9 @@ spec:
               join {{ .Release.Namespace }}-vault-2
 
               # Unseal HA Vault cluster
-              unseal
+              unseal {{ .Release.Namespace }}-vault-0
+              unseal {{ .Release.Namespace }}-vault-1
+              unseal {{ .Release.Namespace }}-vault-2
 
               if [ "$STATUS" -eq 2 ]; then
                   echo -e '\n[*] Setup HA Vault cluster for integration with MinIO'
