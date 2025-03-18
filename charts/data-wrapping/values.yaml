@@ -63,13 +63,6 @@ tenant:
     # Enable automatic certificate generation and signing
     certificate:
       requestAutoCert: true
-    # Buckets to create during Tenant provisioning
-    buckets:
-      - name: uc1-mef-sog-default
-      - name: uc1-mef-sog-encrypt
-      - name: uc2
-      - name: uc3
-      - name: uc4
     # Define configuration for KES (stateless and distributed key-management
     # system)
     kes:
