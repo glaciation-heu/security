@@ -107,7 +107,7 @@ tenant:
           audit: off
         keystore:
           vault:
-            endpoint: "https://data-wrapping-vault-internal:8200"
+            endpoint: "https://data-wrapping-vault:8200"
             version: v2
             prefix: "minio-tenant" # Vault will store keys under this prefix
             kubernetes:
@@ -182,9 +182,9 @@ vault:
     service:
       enabled: true
       active:
-        enabled: false
+        enabled: true
       standby:
-        enabled: false
+        enabled: true
     dataStorage:
       enabled: true
       size: 10Gi
@@ -239,22 +239,22 @@ vault:
           storage "raft" {
             path = "/vault/data"
             retry_join {
-              leader_tls_servername = "data-wrapping-vault-internal"
-              leader_api_addr = "https://data-wrapping-vault-0.data-wrapping-vault-internal:8200"
+              leader_tls_servername = "data-wrapping-vault-active"
+              leader_api_addr = "https://data-wrapping-vault-0.data-wrapping-vault-active:8200"
               leader_ca_cert_file = "/vault/userconfig/vault-tls/ca.crt"
               leader_client_cert_file = "/vault/userconfig/vault-tls/tls.crt"
               leader_client_key_file = "/vault/userconfig/vault-tls/tls.key"
             }
             retry_join {
-              leader_tls_servername = "data-wrapping-vault-internal"
-              leader_api_addr = "https://data-wrapping-vault-1.data-wrapping-vault-internal:8200"
+              leader_tls_servername = "data-wrapping-vault-active"
+              leader_api_addr = "https://data-wrapping-vault-1.data-wrapping-vault-active:8200"
               leader_ca_cert_file = "/vault/userconfig/vault-tls/ca.crt"
               leader_client_cert_file = "/vault/userconfig/vault-tls/tls.crt"
               leader_client_key_file = "/vault/userconfig/vault-tls/tls.key"
             }
             retry_join {
-              leader_tls_servername = "data-wrapping-vault-internal"
-              leader_api_addr = "https://data-wrapping-vault-2.data-wrapping-vault-internal:8200"
+              leader_tls_servername = "data-wrapping-vault-active"
+              leader_api_addr = "https://data-wrapping-vault-2.data-wrapping-vault-active:8200"
               leader_ca_cert_file = "/vault/userconfig/vault-tls/ca.crt"
               leader_client_cert_file = "/vault/userconfig/vault-tls/tls.crt"
               leader_client_key_file = "/vault/userconfig/vault-tls/tls.key"

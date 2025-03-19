@@ -37,14 +37,22 @@ spec:
   - server auth
   - client auth
   dnsNames:
+  - "{{ .Release.Namespace }}-vault"
+  - "{{ .Release.Namespace }}-vault.{{ .Release.Namespace }}.svc.cluster.local"
+  - "*.{{ .Release.Namespace }}-vault"
+  - "*.{{ .Release.Namespace }}-vault.{{ .Release.Namespace }}.svc.cluster.local"
   - "{{ .Release.Namespace }}-vault-internal"
   - "{{ .Release.Namespace }}-vault-internal.{{ .Release.Namespace }}.svc.cluster.local"
   - "*.{{ .Release.Namespace }}-vault-internal"
   - "*.{{ .Release.Namespace }}-vault-internal.{{ .Release.Namespace }}.svc.cluster.local"
-  - "*.vault"
-  ipAddresses:
-  - 127.0.0.1
-  - 192.168.49.2
+  - "{{ .Release.Namespace }}-vault-active"
+  - "{{ .Release.Namespace }}-vault-active.{{ .Release.Namespace }}.svc.cluster.local"
+  - "*.{{ .Release.Namespace }}-vault-active"
+  - "*.{{ .Release.Namespace }}-vault-active.{{ .Release.Namespace }}.svc.cluster.local"
+  - "{{ .Release.Namespace }}-vault-standby"
+  - "{{ .Release.Namespace }}-vault-standby.{{ .Release.Namespace }}.svc.cluster.local"
+  - "*.{{ .Release.Namespace }}-vault-standby"
+  - "*.{{ .Release.Namespace }}-vault-standby.{{ .Release.Namespace }}.svc.cluster.local"
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -143,7 +151,7 @@ spec:
               head -n $THRESHOLD /vault/unseal/cluster-keys |
               while read line; do
                 vault operator unseal \
-                  -address=https://$1.{{ .Release.Namespace }}-vault-internal:8200 \
+                  -address=https://{{ .Release.Namespace }}-vault-active:8200 \
                   $line;
               done
           }
@@ -155,7 +163,7 @@ spec:
               # status check
               sleep 30 # it does the job without requiring to create an ad hoc image
 
-              vault operator init -address=https://{{ .Release.Namespace }}-vault-0.{{ .Release.Namespace }}-vault-internal:8200 -status
+              vault operator init -address=https://{{ .Release.Namespace }}-vault-active:8200 -status
               STATUS=$?
 
               if [ "$STATUS" -eq 2 ]; then
@@ -164,7 +172,7 @@ spec:
                   # Setup HA Vault cluster leader
                   # TODO: Persist PGP encrypted Vault unseal keys somewhere outside the cluster
                   vault operator init \
-                    -address=https://{{ .Release.Namespace }}-vault-0.{{ .Release.Namespace }}-vault-internal:8200 \
+                    -address=https://{{ .Release.Namespace }}-vault-active:8200 \
                     -key-shares=$SHARES \
                     -key-threshold=$THRESHOLD \
                     -format=json > /vault/unseal/response.json
@@ -174,35 +182,33 @@ spec:
               fi
 
               # Unseal HA Vault cluster
-              unseal {{ .Release.Namespace }}-vault-0
-              unseal {{ .Release.Namespace }}-vault-1
-              unseal {{ .Release.Namespace }}-vault-2
+              unseal
 
               if [ "$STATUS" -eq 2 ]; then
                   echo -e '\n[*] Setup HA Vault cluster for integration with MinIO'
                   VAULT_ROOT_TOKEN=$(sed -n 's/\s*"root_token": "\(.*\)".*/\1/p' /vault/unseal/response.json)
                   vault login \
-                    -address=https://{{ .Release.Namespace }}-vault-0.{{ .Release.Namespace }}-vault-internal:8200 \
+                    -address=https://{{ .Release.Namespace }}-vault-active:8200 \
                     $VAULT_ROOT_TOKEN
                   vault secrets enable \
-                    -address=https://{{ .Release.Namespace }}-vault-0.{{ .Release.Namespace }}-vault-internal:8200 \
+                    -address=https://{{ .Release.Namespace }}-vault-active:8200 \
                     -version=2 \
                     kv
                   vault policy write \
-                    -address=https://{{ .Release.Namespace }}-vault-0.{{ .Release.Namespace }}-vault-internal:8200 \
+                    -address=https://{{ .Release.Namespace }}-vault-active:8200 \
                     kes-policy /minio/kes/kes-policy.hcl
                   vault auth enable \
-                    -address=https://{{ .Release.Namespace }}-vault-0.{{ .Release.Namespace }}-vault-internal:8200 \
+                    -address=https://{{ .Release.Namespace }}-vault-active:8200 \
                     kubernetes
                   vault write \
-                    -address=https://{{ .Release.Namespace }}-vault-0.{{ .Release.Namespace }}-vault-internal:8200 \
+                    -address=https://{{ .Release.Namespace }}-vault-active:8200 \
                     auth/kubernetes/config \
                     token_reviewer_jwt="$(cat /minio/kes/service-account/token)" \
                     kubernetes_host="https://kubernetes.default.svc.cluster.local" \
                     kubernetes_ca_cert="$(cat /minio/kes/service-account/ca.crt)" \
                     issuer="https://kubernetes.default.svc.cluster.local"
                   vault write \
-                    -address=https://{{ .Release.Namespace }}-vault-0.{{ .Release.Namespace }}-vault-internal:8200 \
+                    -address=https://{{ .Release.Namespace }}-vault-active:8200 \
                     auth/kubernetes/role/minio-kes \
                     bound_service_account_names=minio-kes \
                     bound_service_account_namespaces={{ .Release.Namespace }} \
