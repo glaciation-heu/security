@@ -238,6 +238,27 @@ vault:
 
           storage "raft" {
             path = "/vault/data"
+            retry_join {
+              leader_tls_servername = "{{ .Release.Namespace }}-vault-internal"
+              leader_api_addr = "https://{{ .Release.Namespace }}-vault-0.{{ .Release.Namespace }}-vault-internal:8200"
+              leader_ca_cert_file = "/vault/userconfig/vault-tls/ca.crt"
+              leader_client_cert_file = "/vault/userconfig/vault-tls/tls.crt"
+              leader_client_key_file = "/vault/userconfig/vault-tls/tls.key"
+            }
+            retry_join {
+              leader_tls_servername = "{{ .Release.Namespace }}-vault-internal"
+              leader_api_addr = "https://{{ .Release.Namespace }}-vault-1.{{ .Release.Namespace }}-vault-internal:8200"
+              leader_ca_cert_file = "/vault/userconfig/vault-tls/ca.crt"
+              leader_client_cert_file = "/vault/userconfig/vault-tls/tls.crt"
+              leader_client_key_file = "/vault/userconfig/vault-tls/tls.key"
+            }
+            retry_join {
+              leader_tls_servername = "{{ .Release.Namespace }}-vault-internal"
+              leader_api_addr = "https://{{ .Release.Namespace }}-vault-2.{{ .Release.Namespace }}-vault-internal:8200"
+              leader_ca_cert_file = "/vault/userconfig/vault-tls/ca.crt"
+              leader_client_cert_file = "/vault/userconfig/vault-tls/tls.crt"
+              leader_client_key_file = "/vault/userconfig/vault-tls/tls.key"
+            }
           }
 
           telemetry {
