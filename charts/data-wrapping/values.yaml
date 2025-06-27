@@ -31,7 +31,7 @@ tenant:
         # Number of volumes per MinIO Tenant pod
         volumesPerServer: 2
         # Size of each volume
-        size: 1Gi
+        size: 10Gi
         # Storage class of the volumes
         storageClassName: longhorn
         # Minimum and maximum resources requested for each pod
